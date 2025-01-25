@@ -1,22 +1,40 @@
 #pragma once
-#include <QTabWidget>
+
+#include "EmployeesTab.h"
+
 #include <utility>
 
-class TabsWidget : public QTabWidget {
-    enum class TABS{
-        MAIN,
-        EMPLOYEES,
-        FACILITIES,
-        SIZE
+#include <QTabWidget>
+
+class TabsWidget : public QTabWidget
+{
+    enum class Tabs
+    {
+        General,
+        Employees,
+        Facilities,
+        Size
     };
 
-    public:
-        TabsWidget(QWidget *parent = nullptr)
-            : QTabWidget(parent)
+    struct WidgetToName
+    {
+        QWidget *tab;
+        QString name;
+    };
+
+public:
+    TabsWidget(QWidget *parent = nullptr)
+        : QTabWidget(parent)
+    {
+        m_tabs = {
+            {Tabs::General, {new QWidget(this), "General"}}, {Tabs::Employees, {new EmployeesTab(this), "Employees"}}, {Tabs::Facilities, {new QWidget(this), "Facilities"}}};
+
+        for (const auto &[_, widgetToName] : m_tabs)
         {
-            m_tabs.at(std::to_underlying(TABS::MAIN)) = new QWidget(this);
-            return;
-        };
-    private:
-        std::array<QWidget*, std::to_underlying(TABS::SIZE)> m_tabs;
+            addTab(widgetToName.tab, widgetToName.name);
+        }
+    };
+
+private:
+    std::map<Tabs, WidgetToName> m_tabs;
 };
