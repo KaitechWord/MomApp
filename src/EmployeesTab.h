@@ -1,6 +1,7 @@
 #pragma once
 
-#include <chrono>
+#include "AddEmployeePopup.h"
+#include "Employee.h"
 
 #include <QWidget>
 #include <QComboBox>
@@ -8,35 +9,6 @@
 #include <QVBoxLayout>
 #include <QCalendarWidget>
 #include <QPushButton>
-
-// Move that to some facility class or tab
-namespace Facility
-{
-    enum class Shift
-    {
-        No,
-        Morning,
-        Afternoon,
-        Evening,
-        Every
-    };
-}
-
-struct ShiftDay
-{
-    std::chrono::year_month_day day;
-    Facility::Shift shift;
-};
-
-struct Employee
-{
-    QString name;
-    QString surname;
-    QString facility;
-    std::vector<ShiftDay> requestedShifts;
-    std::vector<ShiftDay> shiftsOff;
-    QString getFullName() const { return surname + " " + name; };
-};
 
 class EmployeesTab : public QWidget
 {
@@ -46,6 +18,7 @@ public:
     EmployeesTab(QWidget *parent = nullptr);
 
 private:
+    std::vector<Employee> m_employees;
     QHBoxLayout m_tabLayout;
     QVBoxLayout m_employeeLayout;
     QVBoxLayout m_employeeDataLayout;
@@ -55,9 +28,11 @@ private:
     QLabel m_fullNameLabel;
     QLabel m_facilityLabel;
     QPushButton m_addEmployeeButton;
+    AddEmployeePopup m_addEmployeePopup;
     Employee *m_activeEmployee;
-    std::vector<Employee> m_employees;
 
 private slots:
     void setActiveEmployee(int index);
+    void openPopup();
+    void closePopup();
 };
